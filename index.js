@@ -4,6 +4,7 @@ const prompt = require("prompt-sync")();
 const contactName = prompt("inserisci contatto");
 const quantity = prompt("numero volte");
 const delayMessage = prompt("inserisci in millisecondi il delay");
+const messageContain = prompt("inserisci contenuto messaggio");
 
 (async function main() {
   try {
@@ -38,8 +39,7 @@ const delayMessage = prompt("inserisci in millisecondi il delay");
     // loops through cycle of sending message
     for (let i = 0; i < Number(quantity); i++) {
       await page.evaluate(() => {
-        const message =
-          "𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟";
+        const message = messageContain;
         document.execCommand("insertText", false, message);
       });
       await page.click("span[data-testid='send']");
@@ -48,7 +48,7 @@ const delayMessage = prompt("inserisci in millisecondi il delay");
   } catch (err) {
     console.error(err);
   }
-})(contactName, quantity, delayMessage);
+})(contactName, quantity, delayMessage, messageContain);
 
 function delay(time) {
   return new Promise(function (resolve) {
