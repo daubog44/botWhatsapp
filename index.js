@@ -20,7 +20,7 @@ const messageContain = prompt("inserisci contenuto messaggio");
 
     // navigatess to whatsapp
     await page.goto("https://web.whatsapp.com/");
-    await page.waitForSelector("._3m_Xw");
+    await page.waitForSelector("._3Qnsr");
     await delay(3000);
 
     // change to contact you want to send message
@@ -38,10 +38,10 @@ const messageContain = prompt("inserisci contenuto messaggio");
     // amount of message you want to send
     // loops through cycle of sending message
     for (let i = 0; i < Number(quantity); i++) {
-      await page.evaluate(() => {
+      await page.evaluate((messageContain) => {
         const message = messageContain;
         document.execCommand("insertText", false, message);
-      });
+      }, messageContain);
       await page.click("span[data-testid='send']");
       await delay(delayMessage);
     }
