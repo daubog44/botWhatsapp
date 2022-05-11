@@ -23,7 +23,6 @@ const messageContain = prompt("inserisci contenuto messaggio");
     await page.waitForSelector("._3Qnsr");
     await delay(3000);
 
-    // change to contact you want to send message
     const search = await page.waitForSelector(
       "#side > div.uwk68 > div > label > div > div._13NKt.copyable-text.selectable-text"
     );
