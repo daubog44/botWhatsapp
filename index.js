@@ -24,12 +24,18 @@ const messageContain = prompt("inserisci contenuto messaggio: ");
     });
 
     // wait for confirm of login
-    const search = await page.waitForXPath(
-      '//*[@id="side"]/div[1]/div/div/div[2]/div/div[2]'
-    );
+    await page.waitForSelector("div[data-testid='chat-list-search']");
+
+    //! CTRL + ALT + SHIFT + / = ricerca tra le chat e i messaggi
+    await page.keyboard.down("ControlLeft");
+    await page.keyboard.down("AltLeft");
+    await page.keyboard.down("ShiftLeft");
+    await page.keyboard.press("/");
+    await page.keyboard.up("ShiftLeft");
+    await page.keyboard.up("AltLeft");
+    await page.keyboard.up("ControlLeft");
     // change to contact you want to send message and select it
-    search.click();
-    search.focus();
+
     await page.keyboard.type(contactName, { delay: 100 });
     await page.keyboard.press("Enter");
     await page.waitForTimeout(10);
@@ -40,7 +46,8 @@ const messageContain = prompt("inserisci contenuto messaggio: ");
       await page.click("span[data-testid='send']");
       await page.waitForTimeout(delayMessage);
     }
-    await page.close();
+    await page.waitForTimeout(7000);
+    await browser.close();
     console.log("i tuoi messaggi sono stati mandati!");
   } catch (err) {
     console.error(err);
