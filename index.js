@@ -1,9 +1,10 @@
 const puppeteer = require("puppeteer");
 const prompt = require("prompt-sync")();
 
-const contactName = prompt("inserisci contatto");
-const quantity = prompt("numero volte");
-const delayMessage = prompt("inserisci in millisecondi il delay");
+const contactName = prompt("inserisci contatto: ");
+const quantity = prompt("numero volte: ");
+const delayMessage = prompt("inserisci in millisecondi il delay: ");
+const messageContain = prompt("inserisci contenuto messaggio: ");
 
 (async function main() {
   try {
@@ -12,46 +13,36 @@ const delayMessage = prompt("inserisci in millisecondi il delay");
       headless: false,
     });
     const page = await browser.newPage();
-    await page.setDefaultNavigationTimeout(10000000);
+    page.setDefaultNavigationTimeout(30000);
     await page.setUserAgent(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
     );
 
     // navigatess to whatsapp
-    await page.goto("https://web.whatsapp.com/");
-    await page.waitForSelector("._3m_Xw");
-    await delay(3000);
+    await page.goto("https://web.whatsapp.com/", {
+      waitUntil: "domcontentloaded",
+    });
 
-    // change to contact you want to send message
-    const search = await page.waitForSelector(
-      "#side > div.uwk68 > div > label > div > div._13NKt.copyable-text.selectable-text"
+    // wait for confirm of login
+    const search = await page.waitForXPath(
+      '//*[@id="side"]/div[1]/div/div/div[2]/div/div[2]'
     );
+    // change to contact you want to send message and select it
     search.click();
     search.focus();
-    for (let i = 0; i < contactName.length; i++) {
-      await page.keyboard.press(contactName[i]);
-    }
-    await page.waitForTimeout(1000);
+    await page.keyboard.type(contactName, { delay: 100 });
     await page.keyboard.press("Enter");
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(10);
     // amount of message you want to send
     // loops through cycle of sending message
     for (let i = 0; i < Number(quantity); i++) {
-      await page.evaluate(() => {
-        const message =
-          "𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟𐎟 𝐌⃗𝐀̐ྃ͢𝐆͢𝐑⃗𝐎ྃ͢𝐅⃗𝐏͢𝐒 𐎟";
-        document.execCommand("insertText", false, message);
-      });
+      await page.keyboard.type(messageContain);
       await page.click("span[data-testid='send']");
-      await delay(delayMessage);
+      await page.waitForTimeout(delayMessage);
     }
+    await page.close();
+    console.log("i tuoi messaggi sono stati mandati!");
   } catch (err) {
     console.error(err);
   }
-})(contactName, quantity, delayMessage);
-
-function delay(time) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, time);
-  });
-}
+})(contactName, quantity, delayMessage, messageContain);
